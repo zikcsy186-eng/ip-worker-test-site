@@ -106,7 +106,10 @@
         const res = await fetch(url, {
           method: "POST",
           headers: { "content-type": "application/json" },
-          body: JSON.stringify({ event: "page_visit_test" })
+          body: JSON.stringify({
+            event: "page_visit_test",
+            page_url: location.href
+          })
         });
         const text = await res.text();
         let parsed;
