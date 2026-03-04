@@ -89,7 +89,8 @@
     const runBtn = document.getElementById("runBtn");
 
     const saved = localStorage.getItem("workerUrl");
-    if (saved) workerInput.value = saved;
+    const defaultWorkerUrl = "https://ip-worker-test-site.zikcs-y186.workers.dev";
+    workerInput.value = saved || defaultWorkerUrl;
 
     runBtn.addEventListener("click", async () => {
       const url = workerInput.value.trim();
@@ -102,7 +103,11 @@
       output.textContent = "通信中...";
 
       try {
-        const res = await fetch(url, { method: "GET" });
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ event: "page_visit_test" })
+        });
         const text = await res.text();
         let parsed;
         try {

@@ -1,0 +1,4 @@
+name = "ip-worker-test-site"
+main = "src/index.js"
+compatibility_date = "2026-03-04"
+workers_dev = true

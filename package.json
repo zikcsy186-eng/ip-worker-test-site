@@ -1,0 +1,28 @@
+{
+  "name": "ip-worker-test-site",
+  "version": "1.0.0",
+  "description": "Cloudflare Worker のIP取得APIを確認するための GitHub Pages テストサイト。",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "wrangler deploy --config worker/wrangler.toml",
+    "dev": "wrangler dev --config worker/wrangler.toml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zikcsy186-eng/ip-worker-test-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zikcsy186-eng/ip-worker-test-site/issues"
+  },
+  "homepage": "https://github.com/zikcsy186-eng/ip-worker-test-site#readme",
+  "devDependencies": {
+    "wrangler": "^4.70.0"
+  }
+}
