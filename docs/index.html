@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>IP取得テストサイト</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #111827;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22c55e;
+      --border: #1f2937;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+      background: radial-gradient(circle at top right, #1e293b, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: 100%;
+      max-width: 760px;
+      background: rgba(17, 24, 39, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(6px);
+    }
+    h1 { margin-top: 0; font-size: 1.5rem; }
+    p { color: var(--muted); }
+    label { display: block; margin: 16px 0 8px; font-weight: 700; }
+    input, button {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      padding: 12px;
+      font-size: 1rem;
+    }
+    input {
+      background: #0b1220;
+      color: var(--text);
+    }
+    button {
+      margin-top: 12px;
+      background: var(--accent);
+      color: #052e16;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+    }
+    pre {
+      margin-top: 16px;
+      background: #020617;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      overflow: auto;
+      min-height: 120px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .hint { font-size: 0.9rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Cloudflare Worker IP取得テスト</h1>
+    <p>GitHub Pagesで公開して、訪問時にWorkerからIP情報(JSON)を取得します。</p>
+
+    <label for="workerUrl">Worker URL</label>
+    <input id="workerUrl" type="url" placeholder="https://xxxx.your-subdomain.workers.dev" />
+
+    <button id="runBtn">IP取得テストを実行</button>
+    <p class="hint">CORSが必要です。Worker側で `Access-Control-Allow-Origin` を許可してください。</p>
+
+    <pre id="output">まだ実行していません。</pre>
+  </main>
+
+  <script>
+    const workerInput = document.getElementById("workerUrl");
+    const output = document.getElementById("output");
+    const runBtn = document.getElementById("runBtn");
+
+    const saved = localStorage.getItem("workerUrl");
+    if (saved) workerInput.value = saved;
+
+    runBtn.addEventListener("click", async () => {
+      const url = workerInput.value.trim();
+      if (!url) {
+        output.textContent = "Worker URLを入力してください。";
+        return;
+      }
+
+      localStorage.setItem("workerUrl", url);
+      output.textContent = "通信中...";
+
+      try {
+        const res = await fetch(url, { method: "GET" });
+        const text = await res.text();
+        let parsed;
+        try {
+          parsed = JSON.parse(text);
+        } catch (_) {
+          parsed = { raw: text };
+        }
+
+        output.textContent = JSON.stringify({
+          status: res.status,
+          ok: res.ok,
+          body: parsed
+        }, null, 2);
+      } catch (err) {
+        output.textContent = "エラー: " + (err && err.message ? err.message : String(err));
+      }
+    });
+  </script>
+</body>
+</html>
